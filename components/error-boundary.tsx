@@ -1,3 +1,5 @@
+'use client'
+
 import React, { ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {

@@ -26,14 +26,9 @@ export default async function MyPage() {
   }
 
   const userRecordings = await prisma.recording.findMany({
-    where: { userId: (session.user as { id: string }).id }, // Cast session.user to include id
+    where: { userId: session.user.id },
     orderBy: { createdAt: 'desc' },
   })
-
-  const deleteRecording = async (id: string) => {
-    'use server'
-    await prisma.recording.delete({ where: { id } })
-  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -51,11 +46,9 @@ export default async function MyPage() {
                 <audio controls src={recording.url} className="mt-2 w-full" />
               </CardContent>
               <CardFooter>
-                <form action={deleteRecording.bind(null, recording.id)}>
-                  <Button type="submit" variant="destructive" size="sm">
-                    <TrashIcon className="mr-2 h-4 w-4" /> Delete
-                  </Button>
-                </form>
+                <Button variant="destructive" size="sm">
+                  <TrashIcon className="mr-2 h-4 w-4" /> Delete
+                </Button>
               </CardFooter>
             </Card>
           ))}

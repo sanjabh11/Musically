@@ -1,0 +1,46 @@
+"use client"
+
+import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { UploadIcon } from 'lucide-react';
+import axios from 'axios';
+
+export default function UploadSection() {
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  const uploadFile = async () => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('audio', file);
+
+    try {
+      const response = await axios.post('/api/recordings', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log('File uploaded:', response.data);
+      setFile(null);
+      // Optionally, you can add some feedback to the user here
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      // Optionally, you can add some error feedback to the user here
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <input type="file" accept="audio/*" onChange={handleFileChange} />
+      {file && (
+        <Button onClick={uploadFile}>
+          <UploadIcon className="mr-2 h-4 w-4" /> Upload File
+        </Button>
+      )}
+    </div>
+  );
+}
